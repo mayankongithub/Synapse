@@ -1,7 +1,7 @@
 [build]
   base = "/"
   publish = "dev-agent/frontend/dist"
-  command = "cd dev-agent/frontend && npm install --legacy-peer-deps && npx vite build && cp -r ../../public/* ."
+  command = "cd dev-agent/frontend && npm ci && npm run build && cp -r ../../public/* ."
   functions = "netlify/functions"
 
 [[redirects]]
