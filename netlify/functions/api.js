@@ -8,10 +8,15 @@ const ai = new GoogleGenAI({
 
 export default async (req, context) => {
   const url = new URL(req.url);
-  const pathname = url.pathname;
+  let pathname = url.pathname;
+
+  // Remove the function prefix if present
+  if (pathname.startsWith("/.netlify/functions/api")) {
+    pathname = pathname.replace("/.netlify/functions/api", "");
+  }
 
   // Health check
-  if (pathname === "/.netlify/functions/api/health") {
+  if (pathname === "/health" || pathname === "") {
     return new Response(
       JSON.stringify({
         status: "ok",
@@ -23,7 +28,7 @@ export default async (req, context) => {
   }
 
   // Chat endpoint
-  if (pathname === "/.netlify/functions/api/chat" && req.method === "POST") {
+  if (pathname === "/chat" && req.method === "POST") {
     try {
       const body = await req.json();
       const { message, fileContext } = body;
@@ -58,10 +63,7 @@ export default async (req, context) => {
   }
 
   // Convert code endpoint
-  if (
-    pathname === "/.netlify/functions/api/convert" &&
-    req.method === "POST"
-  ) {
+  if (pathname === "/convert" && req.method === "POST") {
     try {
       const body = await req.json();
       const { code, fromLanguage, toLanguage } = body;
