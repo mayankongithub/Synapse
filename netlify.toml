@@ -1,0 +1,25 @@
+[build]
+  base = "/"
+  publish = "dev-agent/frontend/dist"
+  command = "cd dev-agent/frontend && npm install && npm run build && cp -r ../../public/* ."
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[env]
+  [env.production]
+    GEMINI_API_KEY = "AIzaSyCBHab3QrhLWDaeM1O2v4ZZonrCPamfHvs"
+    NODE_ENV = "production"
+
+[context.production.environment]
+  GEMINI_API_KEY = "AIzaSyCBHab3QrhLWDaeM1O2v4ZZonrCPamfHvs"
+  NODE_ENV = "production"
+

@@ -1,12 +1,22 @@
 {
-  "name": "day04",
+  "name": "synapse",
   "version": "1.0.0",
-  "description": "",
+  "description": "Synapse - AI Developer Agent with LLM capabilities",
   "license": "ISC",
   "author": "",
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "build": "npm run clean && npm run build:frontend && npm run build:backend && npm run copy:dist",
+    "build:frontend": "cd dev-agent/frontend && npm install && npm run build",
+    "build:backend": "cd dev-agent/backend && npm install",
+    "clean": "rm -rf dist",
+    "copy:dist": "mkdir -p dist && cp -r dev-agent/frontend/dist dist/frontend && cp -r dev-agent/backend dist/backend && cp -r workspace dist/workspace && cp index.js main.js package.json dist/",
+    "install:all": "npm install && cd dev-agent/frontend && npm install && cd ../backend && npm install && cd ../../monty && npm install",
+    "start:dev-agent": "cd dev-agent/backend && npm start",
+    "start:frontend": "cd dev-agent/frontend && npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

@@ -39,3 +39,6 @@ coverage/
 *.tmp
 .cache/
 
+
+# Local Netlify folder
+.netlify

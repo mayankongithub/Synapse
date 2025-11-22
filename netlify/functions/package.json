@@ -1,0 +1,9 @@
+{
+  "name": "synapse-netlify-functions",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@google/genai": "^1.6.0"
+  }
+}
+
