@@ -1,4 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import fs from "fs";
+import path from "path";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -99,6 +101,148 @@ export default async (req, context) => {
         }),
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
+    }
+  }
+
+  // Get file content endpoint
+  if (pathname === "/files" && req.method === "GET") {
+    try {
+      const url = new URL(req.url);
+      const filePath = url.searchParams.get("path") || "public/index.js";
+
+      // Security: prevent directory traversal
+      if (filePath.includes("..")) {
+        return new Response(
+          JSON.stringify({ success: false, error: "Invalid file path" }),
+          { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+      }
+
+      const fullPath = path.join(process.cwd(), filePath);
+
+      if (!fs.existsSync(fullPath)) {
+        return new Response(
+          JSON.stringify({ success: false, error: "File not found" }),
+          { status: 404, headers: { "Content-Type": "application/json" } }
+        );
+      }
+
+      const content = fs.readFileSync(fullPath, "utf-8");
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          content: content,
+          fileName: path.basename(filePath),
+          filePath: filePath,
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    } catch (error) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: error.message,
+        }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+  }
+
+  // List files endpoint
+  if (pathname === "/files-list" && req.method === "GET") {
+    try {
+      const url = new URL(req.url);
+      const directory = url.searchParams.get("dir") || "public";
+
+      const fullPath = path.join(process.cwd(), directory);
+
+      if (!fs.existsSync(fullPath)) {
+        return new Response(
+          JSON.stringify({ success: false, error: "Directory not found" }),
+          { status: 404, headers: { "Content-Type": "application/json" } }
+        );
+      }
+
+      const files = fs.readdirSync(fullPath).map(file => ({
+        name: file,
+        path: path.join(directory, file),
+        isDirectory: fs.statSync(path.join(fullPath, file)).isDirectory(),
+      }));
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          files: files,
+          directory: directory,
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    } catch (error) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: error.message,
+        }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+  }
+
+  // Handle file requests - /files or /files/filename
+  if (pathname.startsWith("/files")) {
+    if (req.method === "GET") {
+      try {
+        // Extract filename from path or query parameter
+        let fileName = pathname.replace("/files/", "").split("?")[0];
+
+        if (!fileName) {
+          fileName = url.searchParams.get("path") || "public/index.js";
+        }
+
+        // Security: prevent directory traversal
+        if (fileName.includes("..")) {
+          return new Response(
+            JSON.stringify({ success: false, error: "Invalid file path" }),
+            { status: 400, headers: { "Content-Type": "application/json" } }
+          );
+        }
+
+        // Try to read from public folder first
+        let fullPath = path.join(process.cwd(), "public", fileName);
+
+        if (!fs.existsSync(fullPath)) {
+          // Try without public prefix
+          fullPath = path.join(process.cwd(), fileName);
+        }
+
+        if (!fs.existsSync(fullPath)) {
+          return new Response(
+            JSON.stringify({ success: false, error: "File not found", path: fullPath }),
+            { status: 404, headers: { "Content-Type": "application/json" } }
+          );
+        }
+
+        const content = fs.readFileSync(fullPath, "utf-8");
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            content: content,
+            fileName: path.basename(fullPath),
+            filePath: fileName,
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        );
+      } catch (error) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: error.message,
+          }),
+          { status: 500, headers: { "Content-Type": "application/json" } }
+        );
+      }
     }
   }
 
