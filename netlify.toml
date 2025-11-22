@@ -1,13 +1,13 @@
 [build]
   base = "/"
   publish = "dev-agent/frontend/dist"
-  command = "cp -r public/* dev-agent/frontend/dist/ 2>/dev/null || true"
-  functions = "netlify/functions"
+  command = "echo 'Frontend already built'"
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
+  to = "https://synapse-backend-production.up.railway.app/api/:splat"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/*"
