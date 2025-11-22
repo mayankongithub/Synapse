@@ -10,9 +10,21 @@ export default async (req, context) => {
   const url = new URL(req.url);
   let pathname = url.pathname;
 
+  console.log("Received request:", { pathname, method: req.method, url: req.url });
+
   // Remove the function prefix if present
   if (pathname.startsWith("/.netlify/functions/api")) {
     pathname = pathname.replace("/.netlify/functions/api", "");
+  }
+
+  // Also handle /api prefix
+  if (pathname.startsWith("/api")) {
+    pathname = pathname.replace("/api", "");
+  }
+
+  // Normalize empty path
+  if (!pathname || pathname === "") {
+    pathname = "/health";
   }
 
   // Health check
