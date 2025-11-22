@@ -7,6 +7,7 @@
 node_modules/
 dev-agent/frontend/node_modules/
 dev-agent/backend/node_modules/
+!netlify/functions/node_modules/
 
 # Build outputs
 dist/
