@@ -1,0 +1,41 @@
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Dependencies
+node_modules/
+dev-agent/frontend/node_modules/
+dev-agent/backend/node_modules/
+
+# Build outputs
+dist/
+build/
+dev-agent/frontend/dist/
+dev-agent/backend/dist/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+dev-agent/backend/logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test coverage
+coverage/
+
+# Temporary files
+*.tmp
+.cache/
+
