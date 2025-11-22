@@ -1,10 +1,6 @@
-import { GoogleGenAI } from "@google/genai";
-import fs from "fs";
-import path from "path";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export default async (req, context) => {
   const url = new URL(req.url);
@@ -45,15 +41,14 @@ export default async (req, context) => {
       const body = await req.json();
       const { message, fileContext } = body;
 
-      const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
       const prompt = fileContext
         ? `File Context:\n${fileContext}\n\nUser: ${message}`
         : message;
 
       const result = await model.generateContent(prompt);
-      const response = result.response;
-      const text = response.text();
+      const text = result.response.text();
 
       return new Response(
         JSON.stringify({
@@ -80,13 +75,12 @@ export default async (req, context) => {
       const body = await req.json();
       const { code, fromLanguage, toLanguage } = body;
 
-      const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
       const prompt = `Convert this ${fromLanguage} code to ${toLanguage}:\n\n${code}\n\nProvide only the converted code without explanations.`;
 
       const result = await model.generateContent(prompt);
-      const response = result.response;
-      const convertedCode = response.text();
+      const convertedCode = result.response.text();
 
       return new Response(
         JSON.stringify({
