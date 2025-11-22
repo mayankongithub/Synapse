@@ -1,7 +1,7 @@
 [build]
   base = "/"
   publish = "dev-agent/frontend/dist"
-  command = "cd dev-agent/frontend && npm ci && npm run build && cp -r ../../public/* ."
+  command = "cp -r public/* dev-agent/frontend/dist/ 2>/dev/null || true"
   functions = "netlify/functions"
 
 [[redirects]]
