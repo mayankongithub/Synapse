@@ -1,25 +1,10 @@
 [build]
   base = "/"
   publish = "dev-agent/frontend/dist"
-  command = "echo 'Frontend already built'"
-
-[[redirects]]
-  from = "/api/*"
-  to = "https://synapse-backend.vercel.app/api/:splat"
-  status = 200
-  force = true
+  command = "cd dev-agent/frontend && npm run build"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[env]
-  [env.production]
-    GEMINI_API_KEY = "AIzaSyCBHab3QrhLWDaeM1O2v4ZZonrCPamfHvs"
-    NODE_ENV = "production"
-
-[context.production.environment]
-  GEMINI_API_KEY = "AIzaSyCBHab3QrhLWDaeM1O2v4ZZonrCPamfHvs"
-  NODE_ENV = "production"
 
